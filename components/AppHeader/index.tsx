@@ -10,6 +10,7 @@
 
 import {useState, useEffect, MouseEvent} from 'react'
 import Link from 'next/link'
+import {usePathname} from 'next/navigation'
 import IconButton from '@mui/material/IconButton'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
@@ -29,7 +30,8 @@ import JavascriptSupportWarning from './JavascriptSupportWarning'
 import isActiveMenuItem from './isActiveMenuItem'
 
 export default function AppHeader() {
-  const [activePath, setActivePath] = useState('/')
+  // const [activePath, setActivePath] = useState('/')
+  const pathname = usePathname()
   const session = useSession()
   const status = session?.status || 'loading'
   const {host} = useRsdSettings()
@@ -37,12 +39,13 @@ export default function AppHeader() {
   // Responsive menu
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
-  useEffect(() => {
-    // set activePath to currently loaded route/page
-    if (typeof window != 'undefined') {
-      setActivePath(window.location.pathname)
-    }
-  }, [])
+  // useEffect(() => {
+  //   debugger
+  //   // set activePath to currently loaded route/page
+  //   if (pathname) {
+  //     setActivePath(pathname)
+  //   }
+  // }, [pathname])
 
   // Responsive menu
   const open = Boolean(anchorEl)
@@ -85,7 +88,7 @@ export default function AppHeader() {
           <div
             className="justify-center xl:justify-start hidden md:flex text-lg ml-4 gap-5 text-center opacity-90 font-normal flex-1">
             {menuItems.map(item => {
-              const isActive = isActiveMenuItem({item, activePath})
+              const isActive = isActiveMenuItem({item, activePath:pathname ?? '/'})
               return (
                 <Link key={item.path} href={item.path ?? ''} className={`${isActive ? 'nav-active' : ''}`}>
                   {item.label}
@@ -141,7 +144,7 @@ export default function AppHeader() {
                 disableScrollLock = {disable}
               >
                 {menuItems.map(item => {
-                  const isActive = isActiveMenuItem({item, activePath})
+                  const isActive = isActiveMenuItem({item, activePath:pathname??'/'})
                   return (
                     <MenuItem onClick={handleCloseResponsiveMenu} key={item.path}>
                       <Link href={item.path ?? ''} className={`${isActive ? 'nav-active' : ''}`}>
