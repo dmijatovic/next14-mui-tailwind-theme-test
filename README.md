@@ -63,6 +63,8 @@ Can be imported in RootLayout but it need to have 'use client' indication.
 #### AppHeader
 
 - update useAuth to useSession hook
+- FIX: changing the pages is not reflected in the menu (selected status is not updated)!
+- FIX: saveLocationCookie need to be moved to AppHeader
 - min height should be increased to 6rem to accomodate avatar.
 - Imports svg file directly and required additional webpack module. We can [use this link to manually create react components](https://react-svgr.com/playground/?typescript=true).
 
@@ -98,11 +100,13 @@ Refactor component not to use useRsdSettings hook. The data from settings.json i
 
 #### saveLocationCookie
 
-TODO!
+- need to be moved to AppHeader ('use client') in order to save on each route change.
+- we use useEffect and usePathname hook
 
 #### nprogress bar implementation
 
-TODO!
+App router does not have same events as the page router. The current approach DOES NOT WORK.
+The implementation in app router is more complex at this point. Alternative is to use [library](https://github.com/TheSGJ/nextjs-toploader#readme)
 
 ### Tailwind and "turbo" compiler
 
@@ -158,6 +162,10 @@ What need to be done to implement matomo tracking?
 ## Security headers (nonce)
 
 Where do security headers go?
+
+## SEO methods
+
+Do seo methods work?
 
 ## Learn More
 

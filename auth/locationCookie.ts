@@ -8,7 +8,7 @@
 'use client'
 
 export function saveLocationCookie() {
-  // console.log('saveLocationCookie...', location.pathname.toLowerCase())
+  console.log('saveLocationCookie...', location.pathname.toLowerCase())
   // only in browser mode
   if (typeof document == 'undefined') return
   if (typeof location == 'undefined') return

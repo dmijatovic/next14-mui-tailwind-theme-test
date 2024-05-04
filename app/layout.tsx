@@ -1,5 +1,4 @@
 import type {Metadata} from 'next'
-
 import {AppRouterCacheProvider} from '@mui/material-nextjs/v13-appRouter'
 
 import {AuthProvider} from '~/auth/AuthProvider'
