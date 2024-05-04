@@ -12,7 +12,7 @@ import Avatar from '@mui/material/Avatar'
 import Divider from '@mui/material/Divider'
 import ListItemIcon from '@mui/material/ListItemIcon'
 
-import {useAuth} from '~/auth/index'
+import {useSession} from '~/auth/AuthProvider'
 import {MenuItemType} from '~/config/menuItems'
 import {getDisplayInitials, splitName} from '~/utils/getDisplayName'
 import CaretIcon from '~/components/icons/caret.svg'
@@ -24,7 +24,7 @@ type UserMenuType = {
 }
 
 export default function UserMenu(props: UserMenuType) {
-  const {session} = useAuth()
+  const session = useSession()
   const disable = useDisableScrollLock()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)

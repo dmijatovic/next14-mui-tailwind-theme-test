@@ -1,29 +1,30 @@
 'use client'
 
-import {createContext, useEffect, useState} from 'react'
-import {AuthSession, Session, getExpInMs, getWaitInMs} from './index'
+import {createContext, useContext, useEffect, useState,PropsWithChildren} from 'react'
+import {AuthSession, Session, defaultSession, initSession} from './index'
 import refreshSession from './refreshSession'
 
-export const defaultSession:Session={
-  user: null,
-  token: '',
-  status: 'missing'
-}
-
-export const initSession: AuthSession = {
-  session: defaultSession,
-  setSession: () => defaultSession
-}
 
 export const AuthContext = createContext<AuthSession>(initSession)
 
-// AuthProvider used in _app to share session between all components
-export function AuthProvider(props: any) {
-  const [session, setSession] = useState<Session>(props?.session)
+type AuthProviderProps = PropsWithChildren & {
+  session: Session,
+  refreshMarginInMs?: number,
+}
+/**
+ * AuthProvider used on client side. It keeps session extracted from token on server.
+ *
+ * @param props
+ * @returns
+ */
+export function AuthProvider(props:AuthProviderProps) {
+  const [session, setSession] = useState<Session>(props.session)
+  const marginInMs = props?.refreshMarginInMs ?? 5 * 60 * 1000
 
   // console.group('AuthProvider')
   // console.log('session...', session)
   // console.log('props.session...', props?.session)
+  // console.log('marginInMs...', marginInMs)
   // console.groupEnd()
 
   useEffect(() => {
@@ -34,7 +35,7 @@ export function AuthProvider(props: any) {
       && session?.user?.exp) {
       const {user} = session
       const expiresInMs = getExpInMs(user.exp)
-      const waitInMs = getWaitInMs(expiresInMs)
+      const waitInMs = getWaitInMs(expiresInMs,marginInMs)
       // console.log('waitInMs...', waitInMs)
       if (schedule) clearTimeout(schedule)
       if (expiresInMs <= 0) {
@@ -72,7 +73,49 @@ export function AuthProvider(props: any) {
         clearTimeout(schedule)
       }
     }
-  }, [session])
+  }, [session,marginInMs])
 
   return <AuthContext.Provider value={{session, setSession}} {...props}/>
+}
+
+// Auth hook to use in the components
+export const useAuth = () => useContext(AuthContext)
+
+// USE more specific session hook which destructures session ONLY
+export function useSession(){
+  const {session} = useContext(AuthContext)
+  // console.group('useSession')
+  // console.log('session...', session)
+  // console.groupEnd()
+  return {
+    ...session
+  }
+}
+
+/**
+ * Calculate expirition time from now in milliseconds
+ * @param exp in seconds
+ * @returns difference in milliseconds
+ */
+function getExpInMs(exp: number) {
+  // current time in milliseconds
+  const nowInMs = new Date().getTime()
+  const diffInMs = Math.floor((exp * 1000) - nowInMs)
+  // difference exp and now is in ms
+  return diffInMs
+}
+
+/**
+ * Calculate time to wait before refreshing token, in milliseconds.
+ * It uses REFRESH_MARGIN constant to reduce time to schedule token refresh.
+ * @param expInMs, marginInMs => REFRESH_MARGIN_MSEC environment variable
+ * @returns time to wait in milliseconds
+ */
+function getWaitInMs(expInMs: number, marginInMs: number) {
+  // wait time excl. margin
+  const waitInMs = Math.floor(expInMs - marginInMs)
+  // if negative return 0
+  if (waitInMs < 0) return 0
+  // else waiting time in ms
+  return waitInMs
 }

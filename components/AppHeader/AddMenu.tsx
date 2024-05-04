@@ -16,9 +16,9 @@ import IconButton from '@mui/material/IconButton'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import NewspaperIcon from '@mui/icons-material/Newspaper'
 
-import {useSession} from '~/auth'
-import CaretIcon from '~/components/icons/caret.svg'
+import {useSession} from '~/auth/AuthProvider'
 import useDisableScrollLock from '~/utils/useDisableScrollLock'
+import CaretIcon from '~/components/icons/caret.svg'
 
 export default function AddMenu() {
   const {user} = useSession()

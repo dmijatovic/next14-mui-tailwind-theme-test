@@ -13,7 +13,7 @@
 import {useState} from 'react'
 import Link from 'next/link'
 
-import {useAuth} from '~/auth'
+import {useSession} from '~/auth/AuthProvider'
 import useLoginProviders from '~/auth/api/useLoginProviders'
 import {getUserMenuItems} from '~/config/userMenuItems'
 import UserMenu from '~/components/layout/UserMenu'
@@ -21,7 +21,7 @@ import LoginDialog from './LoginDialog'
 
 export default function LoginButton() {
   const providers = useLoginProviders()
-  const {session} = useAuth()
+  const session = useSession()
   const status = session?.status || 'loading'
   const [open, setOpen] = useState(false)
 

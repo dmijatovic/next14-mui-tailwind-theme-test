@@ -5,7 +5,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-import {Dispatch,SetStateAction,useContext} from 'react'
+import {Dispatch,SetStateAction} from 'react'
 // import {cookies} from 'next/headers'
 
 import verifyJwt, {decodeJwt} from './jwtUtils'
@@ -13,14 +13,27 @@ import verifyJwt, {decodeJwt} from './jwtUtils'
 // use next cookie module
 // import cookie from 'cookie'
 import logger from '~/utils/logger'
-import {AuthContext, defaultSession} from './AuthProvider'
+// import {AuthContext, defaultSession} from './AuthProvider'
 import {IncomingMessage} from 'http'
 
 // refresh schedule margin 5min. before expiration time
 // REFRESH_MARGIN_MSEC env variable is used for test purposes ONLY
-const testMargin = process.env.REFRESH_MARGIN_MSEC ? parseInt(process.env.REFRESH_MARGIN_MSEC) : undefined
-export const REFRESH_MARGIN = testMargin ?? 5 * 60 * 1000
-const rsd_token_name = 'rsd_token'
+// const testMargin = process.env.REFRESH_MARGIN_MSEC ? parseInt(process.env.REFRESH_MARGIN_MSEC) : undefined
+// export const REFRESH_MARGIN = testMargin ?? 5 * 60 * 1000
+// const rsd_token_name = 'rsd_token'
+
+export const defaultSession:Session={
+  user: null,
+  token: '',
+  status: 'missing'
+}
+
+export const initSession: AuthSession = {
+  session: defaultSession,
+  setSession: () => defaultSession
+}
+
+
 export type RsdRole = 'rsd_admin' | 'rsd_user'
 export type RsdUser = {
   iss: 'rsd_auth'
@@ -108,33 +121,33 @@ export type AuthSession = {
 // }
 
 // Auth hook to use in the components
-export const useAuth = () => useContext(AuthContext)
+// export const useAuth = () => useContext(AuthContext)
 
 // More specific session hook which destructures session
-export function useSession(){
-  const {session} = useContext(AuthContext)
+// export function useSession(){
+//   const {session} = useContext(AuthContext)
 
-  // console.group('useSession')
-  // console.log('session...', session)
-  // console.groupEnd()
+//   // console.group('useSession')
+//   // console.log('session...', session)
+//   // console.groupEnd()
 
-  return {
-    ...session
-  }
-}
+//   return {
+//     ...session
+//   }
+// }
 
 /**
  * Calculate expirition time from now in milliseconds
  * @param exp in seconds
  * @returns difference in milliseconds
  */
-export function getExpInMs(exp: number) {
-  // current time in milliseconds
-  const nowInMs = new Date().getTime()
-  const diffInMs = Math.floor((exp * 1000) - nowInMs)
-  // difference exp and now is in ms
-  return diffInMs
-}
+// export function getExpInMs(exp: number) {
+//   // current time in milliseconds
+//   const nowInMs = new Date().getTime()
+//   const diffInMs = Math.floor((exp * 1000) - nowInMs)
+//   // difference exp and now is in ms
+//   return diffInMs
+// }
 
 /**
  * Calculate time to wait before refreshing token, in milliseconds.
@@ -142,14 +155,14 @@ export function getExpInMs(exp: number) {
  * @param expInMs
  * @returns time to wait in milliseconds
  */
-export function getWaitInMs(expInMs: number) {
-  // wait time excl. margin
-  const waitInMs = Math.floor(expInMs - REFRESH_MARGIN)
-  // if negative return 0
-  if (waitInMs < 0) return 0
-  // else waiting time in ms
-  return waitInMs
-}
+// export function getWaitInMs(expInMs: number) {
+//   // wait time excl. margin
+//   const waitInMs = Math.floor(expInMs - REFRESH_MARGIN)
+//   // if negative return 0
+//   if (waitInMs < 0) return 0
+//   // else waiting time in ms
+//   return waitInMs
+// }
 
 // /**
 //  * Extract token from rsd_token HttpOnly cookie on the server and validate the token.
@@ -243,16 +256,3 @@ export function getWaitInMs(expInMs: number) {
 //   }
 // }
 
-export function getUserFromToken(token?: string | null) {
-  if (token) {
-    const result = verifyJwt(token)
-    if (result === 'valid') {
-      // decode JWT
-      const user = decodeJwt(token) as RsdUser
-      //
-      return user
-    }
-    return null
-  }
-  return null
-}

@@ -2,17 +2,19 @@ import type {Metadata} from 'next'
 
 import {AppRouterCacheProvider} from '@mui/material-nextjs/v13-appRouter'
 
-import {getSettingsServerSide} from '@/config/getSettingsServerSide'
-import RsdThemeProvider from '@/styles/RsdThemeProvider'
-import {RsdSettingsProvider} from '@/config/RsdSettingsContext'
-
-import {getSessionSeverSide} from '@/auth/getSessionServerSide'
-import {AuthProvider} from '@/auth/AuthProvider'
-
-import '@/styles/global.css'
-import AppFooter from '@/components/AppFooter'
-import AppHeader from '@/components/AppHeader'
+import {AuthProvider} from '~/auth/AuthProvider'
+import {getSessionSeverSide} from '~/auth/getSessionServerSide'
+import {getSettingsServerSide} from '~/config/getSettingsServerSide'
+import {RsdSettingsProvider} from '~/config/RsdSettingsContext'
+import RsdThemeProvider from '~/styles/RsdThemeProvider'
+import AppFooter from '~/components/AppFooter'
+import AppHeader from '~/components/AppHeader'
 import MuiSnackbarProvider from '~/components/snackbar/MuiSnackbarProvider'
+
+import '~/styles/global.css'
+
+// Get token refresh margin from env
+const refreshMarginInMs = process.env.REFRESH_MARGIN_MSEC ? parseInt(process.env.REFRESH_MARGIN_MSEC) : undefined
 
 export const metadata: Metadata = {
   title: 'MUI & Tailwind RSD test app',
@@ -32,7 +34,8 @@ export default async function RootLayout({
 
   console.group('RootLayout')
   // console.log('settings...', settings)
-  console.log('session...', session)
+  // console.log('session...', session)
+  console.log('refreshMarginInMs...', refreshMarginInMs)
   console.groupEnd()
 
   return (
@@ -50,7 +53,7 @@ export default async function RootLayout({
             {/* RSD settings/config */}
             <RsdSettingsProvider settings={settings}>
               {/* Authentication */}
-              <AuthProvider session={session}>
+              <AuthProvider session={session} refreshMarginInMs={refreshMarginInMs}>
                 {/* MUI snackbar service */}
                 <MuiSnackbarProvider>
                   {/* App header */}

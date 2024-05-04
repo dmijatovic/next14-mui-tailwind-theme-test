@@ -14,7 +14,7 @@ import {ClickAwayListener} from '@mui/base'
 // import { useRouter } from 'next/router'
 import {useRouter} from 'next/navigation'
 
-import {useSession} from '~/auth'
+import {useSession} from '~/auth/AuthProvider'
 import {getGlobalSearch,GlobalSearchResults} from '~/components/GlobalSearchAutocomplete/globalSearchAutocomplete.api'
 
 import EnterkeyIcon from '~/components/icons/enterkey.svg'

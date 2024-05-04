@@ -7,12 +7,12 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import {useEffect, useState} from 'react'
-import {useAuth} from '~/auth'
+import {useSession} from '~/auth/AuthProvider'
 import ContentLoader from '~/components/layout/ContentLoader'
 import PageErrorMessage from '~/components/layout/PageErrorMessage'
 
 export default function RsdAdminContent({children}:{children:any}) {
-  const {session} = useAuth()
+  const session = useSession()
   const [status, setStatus] = useState(session?.status ? session?.status :'loading')
 
   useEffect(() => {

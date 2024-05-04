@@ -62,6 +62,7 @@ Can be imported in RootLayout but it need to have 'use client' indication.
 
 #### AppHeader
 
+- update useAuth to useSession hook
 - min height should be increased to 6rem to accomodate avatar.
 - Imports svg file directly and required additional webpack module. We can [use this link to manually create react components](https://react-svgr.com/playground/?typescript=true).
 
@@ -129,12 +130,13 @@ I created not-found.tsx at the root as custom 404 page.
 
 ## Auth module
 
-- Move AuthProvider into separate file that is used client only ('use client')
-- getRsdTokenNode refactored to use next.cookie module (server side)
-- removeRsdTokenNode refactored to use next.cookie module (server side)
-- getSessionSeverSide moved from index and has two approaches:
-  - auth/getSessionSeverSide moved with 'use server' uses cookies module of Next
-  - auth/api/getSessionSeverSide uses old approach to support use in pages/fe/api
+I refactored auth module because client side methods need to have 'use client' flag. The server side method can in turn also have 'use server' flag.
+
+- Move AuthProvider and auth hooks (useAuth, useSession) to separate file (AuthProvider.tsx) used client only ('use client')
+- Move getUserFromToken to jwtUtils (NOTE! when marking file with 'use server' all methods need to be async)
+- getSessionSeverSide has two approaches:
+  - auth/getSessionSeverSide uses cookies module of Next and 'use server'
+  - auth/api/getSessionSeverSide uses "old" page approach to support api in pages/fe/api
 
 ```bash
 npm i jsonwebtoken

@@ -8,7 +8,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import {useForm} from 'react-hook-form'
-import {useSession} from '~/auth'
+import {useSession} from '~/auth/AuthProvider'
 import useSnackbar from '~/components/snackbar/useSnackbar'
 import SubmitButtonWithListener from '~/components/form/SubmitButtonWithListener'
 import ControlledSwitch from '~/components/form/ControlledSwitch'

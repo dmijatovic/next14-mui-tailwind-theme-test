@@ -15,7 +15,7 @@ import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import MenuIcon from '@mui/icons-material/Menu'
 // local dependencies (project components)
-import {useAuth} from '~/auth'
+import {useSession} from '~/auth/AuthProvider'
 import useDisableScrollLock from '~/utils/useDisableScrollLock'
 import {menuItems} from '~/config/menuItems'
 import useRsdSettings from '~/config/useRsdSettings'
@@ -30,7 +30,7 @@ import isActiveMenuItem from './isActiveMenuItem'
 
 export default function AppHeader() {
   const [activePath, setActivePath] = useState('/')
-  const {session} = useAuth()
+  const session = useSession()
   const status = session?.status || 'loading'
   const {host} = useRsdSettings()
   const disable = useDisableScrollLock()

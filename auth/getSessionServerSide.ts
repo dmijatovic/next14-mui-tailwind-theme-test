@@ -5,8 +5,7 @@ import {cookies} from 'next/headers'
 import {app} from '~/config/app'
 import logger from '@/utils/logger'
 import verifyJwt, {decodeJwt} from './jwtUtils'
-import {defaultSession} from './AuthProvider'
-import {RsdUser, Session} from './index'
+import {RsdUser, Session, defaultSession} from './index'
 
 
 /**

@@ -6,7 +6,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import {useEffect,useState} from 'react'
-import {useSession} from '../index'
+import {useSession} from '~/auth/AuthProvider'
 import {isOrganisationMaintainer} from './isMaintainerOfOrganisation'
 
 

@@ -4,7 +4,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import {useState,useEffect} from 'react'
-import {useAuth} from '.'
+import {useSession} from './AuthProvider'
 
 import PageErrorMessage from '../components/layout/PageErrorMessage'
 import ContentLoader from '../components/layout/ContentLoader'
@@ -20,7 +20,7 @@ import {isMaintainerOf} from './permissions/isMaintainerOf'
  */
 export default function ProtectedContent({children, pageType='software', slug=''}:
   { children: any, pageType?:'software'|'project', slug?: string }) {
-  const {session} = useAuth()
+  const session = useSession()
   // keep maintainer flag
   const [isMaintainer, setIsMaintainer] = useState(false)
   // if slug is provided we need to make api call to check if user

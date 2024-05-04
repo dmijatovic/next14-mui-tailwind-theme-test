@@ -3,8 +3,11 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
+// 'use server'
+
 import jwt from 'jsonwebtoken'
 import logger from '~/utils/logger'
+import {RsdUser} from './index'
 
 // secret key is only available in Node (backend=SSR)
 const jwtKey = process.env.PGRST_JWT_SECRET
@@ -59,4 +62,19 @@ export default function verifyJwt(token: string): 'valid' | 'invalid' | 'jwtkey'
     logger(`verifyJwt failed: ${e?.message}`, 'error')
     return 'invalid'
   }
+}
+
+// SERVER SIDE method
+export function getUserFromToken(token?: string | null) {
+  if (token) {
+    const result = verifyJwt(token)
+    if (result === 'valid') {
+      // decode JWT
+      const user = decodeJwt(token) as RsdUser
+      //
+      return user
+    }
+    return null
+  }
+  return null
 }
