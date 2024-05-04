@@ -8,7 +8,7 @@
 
 'use client'
 
-import {useState, useEffect, MouseEvent} from 'react'
+import {useState, MouseEvent, useEffect} from 'react'
 import Link from 'next/link'
 import {usePathname} from 'next/navigation'
 import IconButton from '@mui/material/IconButton'
@@ -28,6 +28,7 @@ import LogoAppSmall from './LogoAppSmall'
 import AddMenu from './AddMenu'
 import JavascriptSupportWarning from './JavascriptSupportWarning'
 import isActiveMenuItem from './isActiveMenuItem'
+import {saveLocationCookie} from '~/auth/locationCookie'
 
 export default function AppHeader() {
   // const [activePath, setActivePath] = useState('/')
@@ -40,12 +41,16 @@ export default function AppHeader() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
   // useEffect(() => {
-  //   debugger
   //   // set activePath to currently loaded route/page
-  //   if (pathname) {
-  //     setActivePath(pathname)
+  //   if (typeof window != 'undefined') {
+  //     setActivePath(window.location.pathname)
   //   }
-  // }, [pathname])
+  // }, [])
+
+  useEffect(() => {
+    // save location on each path change
+    saveLocationCookie()
+  },[pathname])
 
   // Responsive menu
   const open = Boolean(anchorEl)
