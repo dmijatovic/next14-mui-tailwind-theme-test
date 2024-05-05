@@ -5,8 +5,7 @@ import cookie from 'cookie'
 
 import logger from '@/utils/logger'
 import verifyJwt, {decodeJwt} from '~/auth/jwtUtils'
-import {defaultSession} from '~/auth//AuthProvider'
-import {RsdUser, Session} from '~/auth/index'
+import {RsdUser, Session, defaultSession} from '~/auth/index'
 
 
 /**
