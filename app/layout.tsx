@@ -1,4 +1,5 @@
 import type {Metadata} from 'next'
+import {headers} from 'next/headers'
 import {AppRouterCacheProvider} from '@mui/material-nextjs/v13-appRouter'
 
 import {AuthProvider} from '~/auth/AuthProvider'
@@ -11,6 +12,10 @@ import AppHeader from '~/components/AppHeader'
 import MuiSnackbarProvider from '~/components/snackbar/MuiSnackbarProvider'
 
 import '~/styles/global.css'
+import Announcement from '~/components/Announcement/Announcement'
+import {getMatomoSettings} from '~/components/cookies/getMatomoSettings'
+import CookieConsentMatomo from '~/components/cookies/CookieConsentMatomo'
+import MatomoScript from '~/components/cookies/MatomoScript'
 
 // Get token refresh margin from env
 const refreshMarginInMs = process.env.REFRESH_MARGIN_MSEC ? parseInt(process.env.REFRESH_MARGIN_MSEC) : undefined
@@ -27,13 +32,22 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
 
-  // load RSD settings from settings.json
-  const settings = await getSettingsServerSide()
-  const session = await getSessionSeverSide()
+  // extract nonce from response header
+  // the nonce and CSP is added by middleware.ts
+  const nonce = headers().get('x-nonce')
+
+  // load settings.json, session from cookie and matomo settings
+  const [settings,session,matomo] = await Promise.all([
+    getSettingsServerSide(),
+    getSessionSeverSide(),
+    getMatomoSettings()
+  ])
 
   console.group('RootLayout')
   // console.log('settings...', settings)
   // console.log('session...', session)
+  console.log('matomo...', matomo)
+  console.log('nonce...', nonce)
   console.log('refreshMarginInMs...', refreshMarginInMs)
   console.groupEnd()
 
@@ -45,6 +59,8 @@ export default async function RootLayout({
         {/* mounted index.css with font definitions */}
         {/*eslint-disable-next-line @next/next/no-css-tags*/}
         <link href="/styles/index.css" rel="stylesheet" />
+        {/* inject matomo script */}
+        <MatomoScript matomo={matomo} nonce={nonce} />
       </head>
       <body className="dark">
         <AppRouterCacheProvider>
@@ -68,6 +84,10 @@ export default async function RootLayout({
                 </MuiSnackbarProvider>
               </AuthProvider>
             </RsdSettingsProvider>
+            {/* Matomo cookie consent dialog */}
+            <CookieConsentMatomo matomo={matomo} />
+            {/* RSD admin announcements/ system notifications */}
+            <Announcement announcement={settings?.announcement ?? null} />
           </RsdThemeProvider>
         </AppRouterCacheProvider>
       </body>

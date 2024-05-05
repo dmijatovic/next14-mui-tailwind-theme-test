@@ -18,7 +18,11 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## Material UI & Tailwind setup
 
-The setup starts with advised solution for next.js integration on the [MUI documentation website](https://mui.com/material-ui/integrations/nextjs/).
+The setup starts with advised solution for next.js integration on the [MUI documentation website](https://mui.com/material-ui/integrations/nextjs/). See 
+
+The MUI theme provider need to be in the root layout. This is server side component. MUI createTheme function MUST run on the client. You cannot call functions defined in the client only file ('use client') on the server side. It results in 'not a function error' from webpack. All functions that are client ONLY need to be called from the components marked with 'use client'.
+
+**To solve this I created RsdMuiThemeProvider component**.
 
 ```bash
 # install MUI dependencies
@@ -29,26 +33,34 @@ npm i @mui/material-nextjs @emotion/cache
 npm i -D @tailwindcss/typography
 ```
 
-### RootLayout
+## RootLayout
 
-Root layout is server side component. MUI createTheme function MUST run on the client. You cannot call functions defined in the client only file ('use client') on the server side. It results in 'not a function error' from webpack.
-All functions that are client ONLY need to be called from the components marked with 'use client'.
+Root layout is server side component. You cannot call functions defined in the client only file ('use client') on the server side. It results in 'not a function error' from webpack."provider" component. 
 
-**To solve this I created RsdMuiThemeProvider component** Maybe I need to budle all this into one "provider" component.
+I am testing the follwin approach in root layout. These are shared functionality for all app.
 
-#### HTML head imports
+- Loading settings.json and RsdSettingsProvider centraly
+- Loading AuthProvider centrally
+- Loading SnackbarProvider centrally
+- Loading AppHeader centrally
+- Loading AppFooter centrally
+- Loading nprogress bar centrally
+- Loading Announcements centally
+- Loading CookieConsentMatomo centrally
+
+### HTML head imports
 
 It is possible to import css file using <link> markup
 
-#### No next div in the root
+### No next div in the root
 
 **When using layout and app folder setup there is no root div with id `__next`**. The styles can be applied directy to body/main.
 
-#### RsdSettingsProvider
+### RsdSettingsProvider
 
 Can be imported in RootLayout but it need to have 'use client' indication.
 
-#### AuthProvider
+### AuthProvider
 
 **Cookie can be accessed directly because layout is server side component. We need to refactor this part.**
 
@@ -56,11 +68,11 @@ Can be imported in RootLayout but it need to have 'use client' indication.
 - If we perform majority of api calls in the server components we might NOT need token on the frontend. Ewan wants to remove this part anyway and use nginx function.
 - Where to place token refresh method? Should it be in the middleware? How to signal to frontend if token expires.
 
-#### Snackbar provider
+### Snackbar provider
 
 Can be imported in RootLayout but it need to have 'use client' indication.
 
-#### AppHeader
+### AppHeader
 
 - update useAuth to useSession hook
 - FIX: changing the pages is not reflected in the menu (selected status is not updated)!
@@ -94,28 +106,31 @@ The children to update: AddMenu.tsx
 
 - Initially we try to use header client side in order to have hooks refreshing the data?
 
-#### AppFooter
+### AppFooter
 
 Refactor component not to use useRsdSettings hook. The data from settings.json is passed as props in the layout.
 
-#### saveLocationCookie
+### saveLocationCookie
 
-- need to be moved to AppHeader ('use client') in order to save on each route change.
+- need to be moved to AppHeader ('use client') and use useEffect on pathname in order to save cookie on each route change.
 - we use useEffect and usePathname hook
 
-#### nprogress bar implementation
+### nprogress bar implementation
 
 App router does not have same events as the page router. The current approach DOES NOT WORK.
 The implementation in app router is more complex at this point. Alternative is to use [library](https://github.com/TheSGJ/nextjs-toploader#readme)
 
-### Tailwind and "turbo" compiler
+### Announcements
+
+The Announcement component can be placed in the root layout without problems.
+
+## Tailwind and "turbo" compiler
 
 When using "turbo" compiler the @import need to be before styles. That resulted in creating separate tailwind.css and custom.css file that are imported into global.css
 
 ## API endpoints
 
-These should be still in the pages directory. No changes required asfik.
-Refresh endpoint requires cookie see [Auth module](#auth-module)
+These should be still in the pages directory. No changes required asfik. Refresh endpoint requires cookie see [Auth module](#auth-module)
 
 ## ENV
 
@@ -157,11 +172,16 @@ Deleting a cookie using cookies module from next can be only done from ServerAct
 
 ## Matomo
 
-What need to be done to implement matomo tracking?
+- The matomo settings information should be retreived on server. In old version the matomo settings were split between `_app` and `_document` files. Now the settings can be integrated.
+- Create new async method getMatomoSettings in 'use server' file where env variables MATOMO_ID, MATOMO_URL and the cookies mtm_consent and mtm_consent_removed can be extracted.
+- getMatomoSettings can be then used in the root layout on server side.
+- Create MatomoScript component to inject matomo script
 
 ## Security headers (nonce)
 
-Where do security headers go?
+- CSP headers and nonce creation need to be done in the middleware.ts file. See [documentation](https://nextjs.org/docs/app/building-your-application/configuring/content-security-policy)
+- crypto module of node cannot be called in the same way as done in contentSecutoryPolicy.ts therefore I created separate method getCspHeader to reuse CSP policy but wit nonce created in middleware.ts
+- setContentSecurityPolicyHeader and nonceContentSecurity cannot be used. High likely these can be removed.
 
 ## SEO methods
 
