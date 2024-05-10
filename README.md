@@ -18,7 +18,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## Material UI & Tailwind setup
 
-The setup starts with advised solution for next.js integration on the [MUI documentation website](https://mui.com/material-ui/integrations/nextjs/). See 
+The setup starts with advised solution for next.js integration on the [MUI documentation website](https://mui.com/material-ui/integrations/nextjs/). See
 
 The MUI theme provider need to be in the root layout. This is server side component. MUI createTheme function MUST run on the client. You cannot call functions defined in the client only file ('use client') on the server side. It results in 'not a function error' from webpack. All functions that are client ONLY need to be called from the components marked with 'use client'.
 
@@ -35,7 +35,7 @@ npm i -D @tailwindcss/typography
 
 ## RootLayout
 
-Root layout is server side component. You cannot call functions defined in the client only file ('use client') on the server side. It results in 'not a function error' from webpack."provider" component. 
+Root layout is server side component. You cannot call functions defined in the client only file ('use client') on the server side. It results in 'not a function error' from webpack."provider" component.
 
 I am testing the follwin approach in root layout. These are shared functionality for all app.
 
@@ -188,9 +188,55 @@ Deleting a cookie using cookies module from next can be only done from ServerAct
 
 These are added in next.config.mjs. This approach still works and should be applied.
 
-## SEO methods
+## SEO headers
 
-Do seo methods work?
+**Adding headers to pages differs for client and server components!**.
+[See basic documentation](https://nextjs.org/docs/app/building-your-application/optimizing/metadata).
+
+For server components metadata export object can be used. The information about [metadata object can be found here](https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadata-fields).
+
+```javascript
+import type {Metadata} from 'next'
+
+export const metadata:Metadata = {
+  title: `Projects | ${app.title}`,
+  description: 'Show all projects in the RSD',
+  // adds og and twitter headers!
+  openGraph: {
+    title: `Projects | ${app.title}`,
+    description: 'Show all projects in the RSD',
+    siteName: app.title,
+    url:'https://research.software/projects'
+  }
+}
+```
+
+Old SEO functions/components can be only used on client side ('use client'). There is no certainty how these work.
+
+### CitationMeta
+
+This is custom SEO header
+
+### Canonical url
+
+The canonical url can be added using metadata. [See this section for more details](https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase).
+
+
+## Robots txt and sitemap.xml
+
+The [documentation about the robot.txt](https://nextjs.org/docs/app/api-reference/file-conventions/metadata/robots).
+
+- I decided to use custom robots.txt approach using route.ts file. This approach is more flexible and quite similair to approach we used with pages approach.
+- new approach is tested and it works. However I do not see any benefit of new approach. Old approach in pages can be used as well.
+- The old approach in pages/sitemap works properly.
+
+### New approach for partial sitemaps
+
+- new approach functions are moved to sitemap folder
+- apiSitemap.ts file created to hold server side methods used to create sitemap. These use headers from next to extract host information.
+- apiOrganisationsSitemap to create organisation sitemap.xml
+- apiProjectsSitemap to create organisation sitemap.xml
+- apiSoftwareSitemap to create organisation sitemap.xml
 
 ## Learn More
 
