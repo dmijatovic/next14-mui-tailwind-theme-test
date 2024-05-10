@@ -179,7 +179,8 @@ Deleting a cookie using cookies module from next can be only done from ServerAct
 
 ## Security headers (nonce)
 
-- **adding CSP headers using middleware.ts creates problems for the pages folder. See software page. Further research is needed**
+**Adding CSP headers using middleware.ts creates problems for the pages folder. See software page. Further research is needed**.
+
 - CSP headers and nonce creation is advised in the middleware.ts file. See [documentation](https://nextjs.org/docs/app/building-your-application/configuring/content-security-policy)
 - crypto module of node cannot be called in the same way as done in contentSecutoryPolicy.ts therefore I created separate method getCspHeader to reuse CSP policy but wit nonce created in middleware.ts
 - setContentSecurityPolicyHeader and nonceContentSecurity cannot be used. High likely these can be removed.
@@ -190,8 +191,10 @@ These are added in next.config.mjs. This approach still works and should be appl
 
 ## SEO headers
 
-**Adding headers to pages differs for client and server components!**.
-[See basic documentation](https://nextjs.org/docs/app/building-your-application/optimizing/metadata).
+**Adding SEO headers to pages differs for client and server components! Old SEO functions/components CANNOT BE USED according to my tests. See project overview page**.
+
+[See app metadata documentation](https://nextjs.org/docs/app/building-your-application/optimizing/metadata).
+[See migration documentation for next/head](https://nextjs.org/docs/app/building-your-application/upgrading/app-router-migration#step-3-migrating-nexthead)
 
 For server components metadata export object can be used. The information about [metadata object can be found here](https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadata-fields).
 
@@ -211,23 +214,20 @@ export const metadata:Metadata = {
 }
 ```
 
-Old SEO functions/components can be only used on client side ('use client'). There is no certainty how these work.
-
 ### CitationMeta
 
-This is custom SEO header
+This is custom SEO header. To implement see 
 
 ### Canonical url
 
 The canonical url can be added using metadata. [See this section for more details](https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase).
 
-
 ## Robots txt and sitemap.xml
 
 The [documentation about the robot.txt](https://nextjs.org/docs/app/api-reference/file-conventions/metadata/robots).
 
-- I decided to use custom robots.txt approach using route.ts file. This approach is more flexible and quite similair to approach we used with pages approach.
-- new approach is tested and it works. However I do not see any benefit of new approach. Old approach in pages can be used as well.
+To see new approach using app folder look at `app-robots-sitemap`. I do not see any benefit of new approach. Old approach in pages can be used as long as we use api part. **This feature can be migrated as last**.
+
 - The old approach in pages/sitemap works properly.
 
 ### New approach for partial sitemaps

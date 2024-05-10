@@ -5,7 +5,8 @@
 
 import logger from '~/utils/logger'
 import {getBaseUrl} from '~/utils/fetchHelpers'
-import {getDomain, getSitemap, SitemapInfo} from './apiSitemap'
+import {getRsdSettings} from '~/config/getSettingsServerSide'
+import {getSitemap, SitemapInfo} from './getSitemap'
 
 async function getSoftwareList() {
   try {
@@ -20,21 +21,19 @@ async function getSoftwareList() {
       const json: SitemapInfo[] = await resp.json()
       return json
     }
-    logger(`getSoftwareList...${resp.status} ${resp.statusText}`, 'warn')
+    logger(`getSoftwareSitemap.getSoftwareList...${resp.status} ${resp.statusText}`, 'warn')
     return []
   } catch (e: any) {
-    logger(`getSoftwareList...${e.message}`, 'error')
+    logger(`getSoftwareSitemap.getSoftwareList...${e.message}`, 'error')
     return []
   }
 }
 
 
-export async function getSoftwareSitemap() {
-  // get software list & domain
-  const [items, domain] = await Promise.all([
-    getSoftwareList(),
-    getDomain()
-  ])
+export async function getSoftwareSitemap(domain:string) {
+  // get software list
+  const items = await getSoftwareList()
+  const {host} = await getRsdSettings()
 
   return getSitemap({
     baseUrl:`${domain}/software`,
