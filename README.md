@@ -221,13 +221,12 @@ This is custom SEO header
 
 The canonical url can be added using metadata. [See this section for more details](https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase).
 
-
 ## Robots txt and sitemap.xml
 
 The [documentation about the robot.txt](https://nextjs.org/docs/app/api-reference/file-conventions/metadata/robots).
 
-- I decided to use custom robots.txt approach using route.ts file. This approach is more flexible and quite similair to approach we used with pages approach.
-- new approach is tested and it works. However I do not see any benefit of new approach. Old approach in pages can be used as well.
+To see new approach using app folder look at `app-robots-sitemap`. I do not see any benefit of new approach. Old approach in pages can be used as long as we use api part. **This feature can be migrated as last**.
+
 - The old approach in pages/sitemap works properly.
 
 ### New approach for partial sitemaps
