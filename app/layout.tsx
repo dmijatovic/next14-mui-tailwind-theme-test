@@ -1,11 +1,11 @@
-import type {Metadata} from 'next'
-import {headers} from 'next/headers'
-import {AppRouterCacheProvider} from '@mui/material-nextjs/v13-appRouter'
+import type { Metadata } from 'next'
+import { headers } from 'next/headers'
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter'
 
-import {AuthProvider} from '~/auth/AuthProvider'
-import {getSessionSeverSide} from '~/auth/getSessionServerSide'
-import {getSettingsServerSide} from '~/config/getSettingsServerSide'
-import {RsdSettingsProvider} from '~/config/RsdSettingsContext'
+import { AuthProvider } from '~/auth/AuthProvider'
+import { getSessionSeverSide } from '~/auth/getSessionServerSide'
+import { getSettingsServerSide } from '~/config/getSettingsServerSide'
+import { RsdSettingsProvider } from '~/config/RsdSettingsContext'
 import RsdThemeProvider from '~/styles/RsdThemeProvider'
 import AppFooter from '~/components/AppFooter'
 import AppHeader from '~/components/AppHeader'
@@ -13,7 +13,7 @@ import MuiSnackbarProvider from '~/components/snackbar/MuiSnackbarProvider'
 
 import '~/styles/global.css'
 import Announcement from '~/components/Announcement/Announcement'
-import {getMatomoSettings} from '~/components/cookies/getMatomoSettings'
+import { getMatomoSettings } from '~/components/cookies/getMatomoSettings'
 import CookieConsentMatomo from '~/components/cookies/CookieConsentMatomo'
 import MatomoScript from '~/components/cookies/MatomoScript'
 
@@ -32,12 +32,12 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
 
-  // extract nonce from response header
-  // the nonce and CSP is added by middleware.ts
+  // extract nonce from request header
+  // the nonce and CSP are added by middleware.ts
   const nonce = headers().get('x-nonce')
 
   // load settings.json, session from cookie and matomo settings
-  const [settings,session,matomo] = await Promise.all([
+  const [settings, session, matomo] = await Promise.all([
     getSettingsServerSide(),
     getSessionSeverSide(),
     getMatomoSettings()

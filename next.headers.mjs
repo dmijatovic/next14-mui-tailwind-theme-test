@@ -63,5 +63,5 @@ const staticHeaders = [
   }
 ]
 
-module.exports = staticHeaders
+export default staticHeaders
 

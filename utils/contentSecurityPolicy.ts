@@ -56,14 +56,15 @@ function monitoringScripts() {
 function devScript() {
   if (process.env.NODE_ENV !== 'production') {
     // enable script eval in development
-    return ' \'unsafe-eval\''
+    return '\'unsafe-eval\''
   }
   return ''
 }
 
 export function getCspHeader(nonce:string) {
   // append default, monitoring scripts and dev script
-  let scriptSrc = `script-src 'nonce-${nonce}' 'strict-dynamic'${monitoringScripts()}${devScript()} 'unsafe-inline' https:`
+  let scriptSrc = `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${monitoringScripts()} ${devScript()} 'unsafe-inline' https://*;`
+  // let scriptSrc = `script-src 'self' 'strict-dynamic'${monitoringScripts()} ${devScript()} 'unsafe-inline'`
   // combine shared policies with script policy
   const policy = `${sharedPolicy.replace(/\s{2,}/g, ' ').trim()} ${scriptSrc}`
   // return csp policy

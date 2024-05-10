@@ -13,25 +13,32 @@ export function middleware(request: NextRequest) {
   // create csp header string
   const cspHeader = getCspHeader(nonce)
 
-  // set nonce to request headers
+  // set nonce to request header
+  // we extract nonce value in the root layout.tsx
   const requestHeaders = new Headers(request.headers)
   requestHeaders.set('x-nonce', nonce)
-  // set CSP to request header
-  requestHeaders.set(
-    'Content-Security-Policy',
-    cspHeader
-  )
+
   // create response
   const response = NextResponse.next({
     request: {
       headers: requestHeaders,
     },
   })
-  // set CSP heder to response
-  response.headers.set(
-    'Content-Security-Policy',
-    cspHeader
-  )
+
+  // add CSP to response header
+  // REPORT ONLY in dev mode
+  if (process.env.NODE_ENV === 'production') {
+    response.headers.set(
+      'Content-Security-Policy',
+      cspHeader
+    )
+  } else {
+    response.headers.set(
+      'Content-Security-Policy-Report-Only',
+      cspHeader
+    )
+  }
+
   // return response
   return response
 }

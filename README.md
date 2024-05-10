@@ -179,9 +179,14 @@ Deleting a cookie using cookies module from next can be only done from ServerAct
 
 ## Security headers (nonce)
 
-- CSP headers and nonce creation need to be done in the middleware.ts file. See [documentation](https://nextjs.org/docs/app/building-your-application/configuring/content-security-policy)
+- **adding CSP headers using middleware.ts creates problems for the pages folder. See software page. Further research is needed**
+- CSP headers and nonce creation is advised in the middleware.ts file. See [documentation](https://nextjs.org/docs/app/building-your-application/configuring/content-security-policy)
 - crypto module of node cannot be called in the same way as done in contentSecutoryPolicy.ts therefore I created separate method getCspHeader to reuse CSP policy but wit nonce created in middleware.ts
 - setContentSecurityPolicyHeader and nonceContentSecurity cannot be used. High likely these can be removed.
+
+### Default security headers
+
+These are added in next.config.mjs. This approach still works and should be applied.
 
 ## SEO methods
 

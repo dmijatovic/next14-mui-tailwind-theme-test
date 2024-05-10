@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 
 import rewritesConfig from './next.rewrites.mjs'
+import securityHeaders from './next.headers.mjs'
 // console.log('rewritesConfig...', rewritesConfig)
 
 const nextConfig = {
@@ -24,6 +25,17 @@ const nextConfig = {
     })
     return config
   },
+
+  async headers() {
+    return [
+      {
+        // Apply these headers to all routes in your application.
+        source: '/:path*',
+        headers: securityHeaders,
+      },
+    ]
+  },
+
   // support for svg import - TURBOPACK
   experimental: {
     turbo: {
