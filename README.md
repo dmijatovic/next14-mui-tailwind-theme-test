@@ -216,7 +216,7 @@ export const metadata:Metadata = {
 
 ### CitationMeta
 
-This is custom SEO header. To implement see 
+This is custom SEO header.
 
 ### Canonical url
 
@@ -226,17 +226,47 @@ The canonical url can be added using metadata. [See this section for more detail
 
 The [documentation about the robot.txt](https://nextjs.org/docs/app/api-reference/file-conventions/metadata/robots).
 
-To see new approach using app folder look at `app-robots-sitemap`. I do not see any benefit of new approach. Old approach in pages can be used as long as we use api part. **This feature can be migrated as last**.
-
 - The old approach in pages/sitemap works properly.
 
 ### New approach for partial sitemaps
+
+To see new approach using app folder look at `app-robots-sitemap`. I do not see any benefit of new approach. Old approach in pages can be used as long as we use api part. **This feature can be migrated as last**.
 
 - new approach functions are moved to sitemap folder
 - apiSitemap.ts file created to hold server side methods used to create sitemap. These use headers from next to extract host information.
 - apiOrganisationsSitemap to create organisation sitemap.xml
 - apiProjectsSitemap to create organisation sitemap.xml
 - apiSoftwareSitemap to create organisation sitemap.xml
+
+## Organisations
+
+This section describes migration of organisations routes to app folder. This is most complex part. It is good test case to discover all challenges.
+
+### Organisations overview
+
+- ClientSearch created because Search component uses client side approach
+- ClientTablePagination created to handle client side approach
+- useOrganisationOverviewParams updated to use next/navigation
+- ssrOrganisationParams updated to accept null
+- lightgray background moved to rootlayout. Background is now set to body.
+- ClientPagination created to handle client approach
+
+**Note! client side components are initially rendered on server. In case of ClientPagination we cannot use client side cookie methods that depend on document because initiall run is on server side. I needed to pass search params into component as properties.**
+
+### Search/query parameters
+
+Majority of changes are related to migration from next/router to next/navigation.
+**We need to use `useSearchParams()` hook. To support new approach `decodeSearchParam` method is created**.
+The methods in extractQueryParam need to be refactored to use `decodeSearchParam` instead `decodeQueryParam`.
+The methods to be updated are:
+
+**Organisation specific query methods are moved to sperate `apiOrganisationParam.ts` file located in organisation/overview folder.**
+
+## UserSettings api
+
+The methods need to be split into userSettingsClient and userSettingsServer. We can use next cookies on server side.
+
+**I see unexpected behaviour with this split. useSettingsClient methods are sometimes called on server. For example when reloading page ClientPagination is called on server side. There we use client method to extract page_rows from the cookie. This method fails because document is not present.**
 
 ## Learn More
 

@@ -43,13 +43,13 @@ export default async function RootLayout({
     getMatomoSettings()
   ])
 
-  console.group('RootLayout')
+  // console.group('RootLayout')
   // console.log('settings...', settings)
   // console.log('session...', session)
-  console.log('matomo...', matomo)
-  console.log('nonce...', nonce)
-  console.log('refreshMarginInMs...', refreshMarginInMs)
-  console.groupEnd()
+  // console.log('matomo...', matomo)
+  // console.log('nonce...', nonce)
+  // console.log('refreshMarginInMs...', refreshMarginInMs)
+  // console.groupEnd()
 
   return (
     <html lang="en">
@@ -62,7 +62,7 @@ export default async function RootLayout({
         {/* inject matomo script */}
         <MatomoScript matomo={matomo} nonce={nonce} />
       </head>
-      <body className="dark">
+      <body className="dark bg-base-200">
         <AppRouterCacheProvider>
           <RsdThemeProvider rsdTheme={settings.theme}>
             {/* RSD settings/config */}
